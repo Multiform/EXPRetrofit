@@ -7,6 +7,9 @@ import com.multiform.expretrofit.network.MovieApiClient
 import com.multiform.expretrofit.network.models.MoviesResponse
 import com.multiform.expretrofit.utils.API_KEY
 import com.multiform.expretrofit.utils.APP_ACTIVITY
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,6 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         APP_ACTIVITY = this
 
+        rcViewMain.hasFixedSize()
+
         val call = MovieApiClient.apiClient.getTopRatedMovies(API_KEY, "ru")
 
         call.enqueue(object : Callback<MoviesResponse> {
@@ -36,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                 response: Response<MoviesResponse>
             ) {
                 val movies = response.body()!!.results
-                movies.forEach { Log.d(TAG, it.title.orEmpty()) }
+                rcViewMain.adapter = GroupAdapter<GroupieViewHolder>().apply { addAll(movies) }
             }
         })
     }
